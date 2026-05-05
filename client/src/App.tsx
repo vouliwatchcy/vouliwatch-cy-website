@@ -4,31 +4,40 @@ import NotFound from "@/pages/NotFound";
 import { Route, Switch } from "wouter";
 import ErrorBoundary from "./components/ErrorBoundary";
 import { ThemeProvider } from "./contexts/ThemeContext";
-import { LanguageProvider } from "@/contexts/LanguageContext";
-import Home from "@/pages/Home";
-import Sessions from "@/pages/Sessions";
-import SessionDetail from "@/pages/SessionDetail";
-import About from "@/pages/About";
+import { LanguageProvider } from "./contexts/LanguageContext";
+import { Suspense, lazy } from "react";
+
+// Lazy load pages for code splitting
+const Home = lazy(() => import("./pages/Home"));
+const Sessions = lazy(() => import("./pages/Sessions"));
+const SessionDetail = lazy(() => import("./pages/SessionDetail"));
+const About = lazy(() => import("./pages/About"));
+
+// Loading fallback component
+function PageLoader() {
+  return (
+    <div className="min-h-screen flex items-center justify-center bg-background">
+      <div className="text-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
+        <p className="text-muted-foreground">Φόρτωση...</p>
+      </div>
+    </div>
+  );
+}
 
 function Router() {
   return (
-    <Switch>
-      {/* Greek Routes */}
-      <Route path={"/"} component={Home} />
-      <Route path={"/sessions"} component={Sessions} />
-      <Route path={"/sessions/:date"} component={SessionDetail} />
-      <Route path={"/about"} component={About} />
-      
-      {/* English Routes */}
-      <Route path={"/en"} component={Home} />
-      <Route path={"/en/sessions"} component={Sessions} />
-      <Route path={"/en/sessions/:date"} component={SessionDetail} />
-      <Route path={"/en/about"} component={About} />
-      
-      <Route path={"/404"} component={NotFound} />
-      {/* Final fallback route */}
-      <Route component={NotFound} />
-    </Switch>
+    <Suspense fallback={<PageLoader />}>
+      <Switch>
+        <Route path={"/"} component={Home} />
+        <Route path={"/sessions"} component={Sessions} />
+        <Route path={"/sessions/:id"} component={SessionDetail} />
+        <Route path={"/about"} component={About} />
+        <Route path={"/404"} component={NotFound} />
+        {/* Final fallback route */}
+        <Route component={NotFound} />
+      </Switch>
+    </Suspense>
   );
 }
 
