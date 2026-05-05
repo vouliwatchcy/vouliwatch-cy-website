@@ -1,0 +1,67 @@
+import React, { createContext, useContext, useEffect, useState } from 'react';
+import elMessages from '@/i18n/el.json';
+import enMessages from '@/i18n/en.json';
+
+type Language = 'el' | 'en';
+
+interface LanguageContextType {
+  language: Language;
+  toggleLanguage: () => void;
+  t: (key: string) => string;
+}
+
+const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
+
+const messages: Record<Language, typeof elMessages> = {
+  el: elMessages,
+  en: enMessages,
+};
+
+export function LanguageProvider({ children }: { children: React.ReactNode }) {
+  const [language, setLanguage] = useState<Language>('el');
+  const [isHydrated, setIsHydrated] = useState(false);
+
+  useEffect(() => {
+    // Load language from localStorage on mount
+    const stored = localStorage.getItem('vouliwatch-language') as Language | null;
+    if (stored && (stored === 'el' || stored === 'en')) {
+      setLanguage(stored);
+    }
+    setIsHydrated(true);
+  }, []);
+
+  const toggleLanguage = () => {
+    const newLang: Language = language === 'el' ? 'en' : 'el';
+    setLanguage(newLang);
+    localStorage.setItem('vouliwatch-language', newLang);
+  };
+
+  const t = (key: string): string => {
+    const keys = key.split('.');
+    let value: any = messages[language];
+    
+    for (const k of keys) {
+      if (value && typeof value === 'object' && k in value) {
+        value = value[k];
+      } else {
+        return key;
+      }
+    }
+    
+    return typeof value === 'string' ? value : key;
+  };
+
+  return (
+    <LanguageContext.Provider value={{ language, toggleLanguage, t }}>
+      {children}
+    </LanguageContext.Provider>
+  );
+}
+
+export function useLanguage() {
+  const context = useContext(LanguageContext);
+  if (!context) {
+    throw new Error('useLanguage must be used within LanguageProvider');
+  }
+  return context;
+}
