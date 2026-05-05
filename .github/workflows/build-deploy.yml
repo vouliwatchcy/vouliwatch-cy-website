@@ -1,0 +1,31 @@
+name: Build & Deploy
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'sessions/**'
+      - 'js/**'
+      - 'css/**'
+      - 'index.html'
+      - '.github/workflows/build-deploy.yml'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Convert sessions
+        run: |
+          node scripts/convert-sessions.mjs
+      
+      - name: Upload to Cloudflare Pages
+        uses: cloudflare/pages-action@v1
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          projectName: vouliwatch-cy-website
+          directory: .
+          productionBranch: main
