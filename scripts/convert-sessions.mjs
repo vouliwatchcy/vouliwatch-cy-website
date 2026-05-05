@@ -161,17 +161,49 @@ function extractDate(title) {
 }
 
 /**
+ * Extract a unique session identifier from filename
+ * Supports multiple sessions on the same day:
+ * - 2026-01-29.md -> "2026-01-29"
+ * - 2026-01-29-morning.md -> "2026-01-29-morning"
+ * - 2026-01-29-A.md -> "2026-01-29-a"
+ * - 2026-01-29-part-b.md -> "2026-01-29-part-b"
+ */
+function extractSessionId(filename) {
+  // Remove .md extension
+  const nameWithoutExt = filename.replace(/\.md$/, '');
+  
+  // Extract date part (YYYY-MM-DD)
+  const dateMatch = nameWithoutExt.match(/^(\d{4}-\d{2}-\d{2})/);
+  if (!dateMatch) {
+    return nameWithoutExt.toLowerCase();
+  }
+  
+  const date = dateMatch[1];
+  const remainder = nameWithoutExt.substring(date.length).trim();
+  
+  // If there's additional info after the date, append it (lowercase, remove leading dashes/spaces)
+  if (remainder) {
+    const suffix = remainder.replace(/^[-\s]+/, '').toLowerCase();
+    return `${date}-${suffix}`;
+  }
+  
+  return date;
+}
+
+/**
  * Convert markdown file to session JSON
  */
-function convertFile(filePath) {
-  console.log(`Converting ${path.basename(filePath)}...`);
+function convertFile(filePath, filename) {
+  console.log(`Converting ${filename}...`);
 
   const { metadata, body } = parseMdFile(filePath);
   const topics = parseTopics(body);
   const pending = parsePending(body);
   const date = extractDate(metadata.title);
+  const sessionId = extractSessionId(filename);
 
   const session = {
+    id: sessionId,
     title: metadata.title || '',
     date,
     youtube: metadata.video || '',
@@ -180,7 +212,7 @@ function convertFile(filePath) {
     pending: pending.length > 0 ? pending : undefined,
   };
 
-  return session;
+  return { sessionId, session };
 }
 
 /**
@@ -204,8 +236,8 @@ function main() {
   mdFiles.forEach(file => {
     try {
       const filePath = path.join(sessionsDir, file);
-      const session = convertFile(filePath);
-      sessions[session.date] = session;
+      const { sessionId, session } = convertFile(filePath, file);
+      sessions[sessionId] = session;
     } catch (error) {
       console.error(`Error converting ${file}:`, error.message);
     }
