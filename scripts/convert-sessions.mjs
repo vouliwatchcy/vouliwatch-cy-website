@@ -118,7 +118,7 @@ function parseTopics(body) {
           topic.pdf = pdfText;
         }
       } else if (line.startsWith('- Επίπεδο βεβαιότητας:') || line.startsWith('- **Επίπεδο βεβαιότητας:**')) {
-        topic.certainty = line.replace(/^- \*\*?Επίπεδο βεβαιότητας:\*\*?/, '').trim();
+        topic.certainty = line.replace(/^- \*\*?Επίπεδο βεβαιότητας:\*\*?/, '').trim().replace(/\.$/, '');
       } else if (line.startsWith('- Γιατί έχει σημασία:') || line.startsWith('- **Γιατί έχει σημασία:**')) {
         topic.why_matters = line.replace(/^- \*\*?Γιατί έχει σημασία:\*\*?/, '').trim();
       }
@@ -185,9 +185,9 @@ function extractSessionId(filename) {
   const date = dateMatch[1];
   const remainder = nameWithoutExt.substring(date.length).trim();
   
-  // If there's additional info after the date, append it (lowercase, remove leading dashes/spaces)
+  // If there's additional info after the date, append it (lowercase, replace spaces with hyphens)
   if (remainder) {
-    const suffix = remainder.replace(/^[-\s]+/, '').toLowerCase();
+    const suffix = remainder.replace(/^[-\s]+/, '').replace(/\s+/g, '-').toLowerCase();
     return `${date}-${suffix}`;
   }
   

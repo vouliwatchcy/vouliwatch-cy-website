@@ -133,31 +133,53 @@ const pages = {
   
   async sessions() {
     const sessions = Object.values(sessionsData).sort((a, b) => new Date(b.date) - new Date(a.date));
-    
+
     if (sessions.length === 0) {
       return `${components.navbar()}<div class="container"><p>${i18n.t('sessions.noSessions')}</p></div>${components.footer()}`;
     }
-    
-    const sessionsHtml = sessions.map(session => `
-      <div class="session-card">
-        <div class="session-date">${components.formatDate(session.date)}</div>
-        <h3 class="session-title">${session.title}</h3>
-        <p class="session-summary">${session.summary}</p>
-        <div class="session-stats">
-          ${session.topics ? `<div class="stat"><span class="stat-number">${session.topics.length}</span> <span>${i18n.t('previousSessions.topicsLabel')}</span></div>` : ''}
+
+    const locale = i18n.currentLang === 'el' ? 'el-GR' : 'en-US';
+
+    // Group sessions by year-month
+    const groups = {};
+    sessions.forEach(session => {
+      const [year, month] = session.date.split('-');
+      const key = `${year}-${month}`;
+      if (!groups[key]) {
+        const d = new Date(parseInt(year), parseInt(month) - 1, 1);
+        groups[key] = {
+          label: d.toLocaleDateString(locale, { month: 'long', year: 'numeric' }),
+          sessions: []
+        };
+      }
+      groups[key].sessions.push(session);
+    });
+
+    const groupsHtml = Object.entries(groups).map(([, group]) => `
+      <div class="sessions-group">
+        <h2 class="sessions-group-header">${group.label}</h2>
+        <div class="sessions-grid">
+          ${group.sessions.map(session => `
+            <div class="session-card">
+              <div class="session-date">${components.formatDate(session.date)}</div>
+              <h3 class="session-title">${session.title}</h3>
+              <p class="session-summary">${session.summary}</p>
+              <div class="session-stats">
+                ${session.topics ? `<div class="stat"><span class="stat-number">${session.topics.length}</span> <span>${i18n.t('previousSessions.topicsLabel')}</span></div>` : ''}
+              </div>
+              <a href="/sessions/${session.id}" class="session-link" data-link>${i18n.t('previousSessions.viewAll')}</a>
+            </div>
+          `).join('')}
         </div>
-        <a href="/sessions/${session.id}" class="session-link" data-link>${i18n.t('previousSessions.viewAll')}</a>
       </div>
     `).join('');
-    
+
     return `
       ${components.navbar()}
       <div class="section">
         <div class="container">
           <h1 class="section-title">${i18n.t('sessions.title')}</h1>
-          <div class="sessions-grid">
-            ${sessionsHtml}
-          </div>
+          ${groupsHtml}
         </div>
       </div>
       ${components.footer()}
@@ -232,11 +254,12 @@ const pages = {
       ${components.navbar()}
       <div class="session-detail">
         <div class="container">
-          <a href="/" class="btn btn-secondary" data-link style="margin-bottom: 2rem;">${i18n.t('sessionDetail.back')}</a>
-          
+          <a href="/sessions" class="btn btn-outline" data-link style="margin-bottom: 2rem;">← ${i18n.t('sessionDetail.back')}</a>
+
           <div class="session-header">
             <h1 class="session-header-title">${session.title}</h1>
             <p class="session-header-date">${components.formatDate(session.date)}</p>
+            ${session.youtube ? `<a href="${session.youtube}" target="_blank" class="btn btn-primary" style="margin-top: 1rem; display: inline-block;">▶ ${i18n.t('hero.youtubeButton')}</a>` : ''}
           </div>
           
           ${session.summary ? `
@@ -363,7 +386,7 @@ router.render = async function() {
   
   // Check for session detail route
   if (path.startsWith('/sessions/') && path !== '/sessions') {
-    const id = path.split('/')[2];
+    const id = decodeURIComponent(path.split('/')[2]);
     const content = await pages.sessionDetail(id);
     document.getElementById('app').innerHTML = content;
     window.scrollTo(0, 0);

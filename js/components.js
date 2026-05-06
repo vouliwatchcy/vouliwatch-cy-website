@@ -78,6 +78,7 @@ const components = {
   },
   
   certaintyBadge(level) {
+    const normalized = level ? level.replace(/\.$/, '').trim() : '';
     const levelMap = {
       'Υψηλό': 'high',
       'High': 'high',
@@ -86,11 +87,11 @@ const components = {
       'Χαμηλό': 'low',
       'Low': 'low'
     };
-    
-    const levelClass = levelMap[level] || 'medium';
+
+    const levelClass = levelMap[normalized] || 'medium';
     const emoji = levelClass === 'high' ? '🟢' : levelClass === 'medium' ? '🟡' : '🔴';
-    
-    return `<span class="certainty-badge certainty-${levelClass}">${emoji} ${level}</span>`;
+
+    return `<span class="certainty-badge certainty-${levelClass}">${emoji} ${normalized}</span>`;
   },
   
   formatDate(dateStr) {
