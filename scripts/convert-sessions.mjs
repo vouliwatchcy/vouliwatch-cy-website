@@ -6,7 +6,7 @@ import { fileURLToPath } from 'url';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const sessionsDir = path.join(__dirname, '../sessions');
-const outputDir = path.join(__dirname, '../public/data');
+const outputDir = path.join(__dirname, '../data');
 
 // Ensure output directory exists
 if (!fs.existsSync(outputDir)) {
