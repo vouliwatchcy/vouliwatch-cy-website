@@ -209,3 +209,4 @@ const i18n = {
 
 // Set initial language
 document.documentElement.lang = i18n.currentLang;
+
