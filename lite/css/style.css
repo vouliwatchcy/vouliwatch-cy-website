@@ -165,10 +165,78 @@ a:hover {
   background-color: var(--accent-light);
 }
 
+.hamburger-menu {
+  display: none;
+  background: none;
+  border: none;
+  color: white;
+  font-size: 1.5rem;
+  cursor: pointer;
+  padding: 0.5rem;
+}
+
+.mobile-menu {
+  display: none;
+  position: absolute;
+  top: 100%;
+  right: 0;
+  background-color: var(--primary);
+  flex-direction: column;
+  gap: 0;
+  list-style: none;
+  width: 100%;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  z-index: 50;
+}
+
+.mobile-menu.active {
+  display: flex;
+}
+
+.mobile-menu li {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.mobile-menu a {
+  display: block;
+  padding: 1rem;
+  color: white;
+  text-decoration: none;
+  transition: background-color 0.2s ease;
+}
+
+.mobile-menu a:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+  color: var(--accent);
+}
+
+.mobile-lang-toggle {
+  padding: 1rem;
+  background-color: rgba(255, 255, 255, 0.1);
+  border: none;
+  color: white;
+  cursor: pointer;
+  width: 100%;
+  text-align: left;
+  font-weight: 600;
+  transition: background-color 0.2s ease;
+}
+
+.mobile-lang-toggle:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
 @media (max-width: 768px) {
   .navbar-nav {
-    gap: 1rem;
-    font-size: 0.85rem;
+    display: none;
+  }
+  
+  .hamburger-menu {
+    display: block;
+  }
+  
+  .lang-toggle {
+    display: none;
   }
   
   .navbar-content {
@@ -500,6 +568,7 @@ a:hover {
 /* About Section */
 .about-content {
   max-width: 800px;
+  margin: 0 auto;
 }
 
 .about-description {
@@ -514,6 +583,10 @@ a:hover {
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
   gap: 2rem;
   margin-bottom: 3rem;
+  justify-items: center;
+  max-width: 1000px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .pillar {
@@ -651,7 +724,7 @@ a:hover {
   padding-top: 1.5rem;
   text-align: center;
   font-size: 0.9rem;
-  color: rgba(255, 255, 255, 0.7);
+  color: white;
 }
 
 /* Session Detail Page */

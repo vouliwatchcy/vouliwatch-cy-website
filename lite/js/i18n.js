@@ -20,6 +20,7 @@ const i18n = {
       previousSessions: {
         title: 'Προηγούμενες Συνεδρίες',
         viewAll: 'Δες όλες →',
+        topicsLabel: 'Θέματα/Αποφάσεις',
         approved: 'εγκρίθηκαν',
         postponed: 'αναβλήθηκαν',
         rejected: 'απορρίφθηκαν',
@@ -51,10 +52,10 @@ const i18n = {
         text: 'Το VouliWatch CY παράγει αποτελέσματα με τη βοήθεια AI. Γίνεται πάντα προσπάθεια διασταύρωσης με επίσημες πηγές, αλλά ενδέχεται να υπάρχουν λάθη. Αν εντοπίσετε κάτι ανακριβές, επικοινωνήστε μαζί μας.'
       },
       footer: {
-        tagline: 'Κάνουμε τη Βουλή κατανοητή',
+        tagline: 'Τι έγινε στη βουλή εύκολα και γρήγορα',
         instagram: 'Instagram',
         telegram: 'Telegram',
-        contact: 'Επικοινωνία',
+        contact: 'vouliwatchcy@gmail.com',
         legal: 'Νομική σημείωση',
         builtWith: 'Κατασκευάστηκε με ❤️ για τη κυπριακή δημοκρατία'
       },
@@ -106,6 +107,7 @@ const i18n = {
       previousSessions: {
         title: 'Previous Sessions',
         viewAll: 'View all →',
+        topicsLabel: 'Topics/Decisions',
         approved: 'approved',
         postponed: 'postponed',
         rejected: 'rejected',
@@ -137,10 +139,10 @@ const i18n = {
         text: 'VouliWatch CY produces results with AI assistance. We always try to cross-check with official sources, but errors may occur. If you find something inaccurate, please contact us.'
       },
       footer: {
-        tagline: 'Making Parliament understandable',
+        tagline: 'What happened in parliament easily and quickly',
         instagram: 'Instagram',
         telegram: 'Telegram',
-        contact: 'Contact',
+        contact: 'vouliwatchcy@gmail.com',
         legal: 'Legal notice',
         builtWith: 'Built with ❤️ for Cypriot democracy'
       },

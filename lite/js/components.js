@@ -19,6 +19,13 @@ const components = {
               <li><a href="/about" data-link>${i18n.t('nav.about')}</a></li>
               <li><button class="lang-toggle" onclick="i18n.toggleLanguage(); location.reload()">${i18n.t('nav.language')}</button></li>
             </ul>
+            <button class="hamburger-menu" onclick="document.querySelector('.mobile-menu').classList.toggle('active')">☰</button>
+            <ul class="mobile-menu">
+              <li><a href="/" data-link>${i18n.t('nav.home')}</a></li>
+              <li><a href="/sessions" data-link>${i18n.t('nav.sessions')}</a></li>
+              <li><a href="/about" data-link>${i18n.t('nav.about')}</a></li>
+              <li><button class="mobile-lang-toggle" onclick="i18n.toggleLanguage(); location.reload()">${i18n.t('nav.language')}</button></li>
+            </ul>
           </div>
         </div>
       </nav>
@@ -43,7 +50,7 @@ const components = {
             </div>
             <div class="footer-section">
               <h3>${i18n.t('footer.contact')}</h3>
-              <a href="mailto:info@vouliwatch.cy">info@vouliwatch.cy</a>
+              <a href="mailto:vouliwatchcy@gmail.com">vouliwatchcy@gmail.com</a>
             </div>
           </div>
           <div class="footer-bottom">

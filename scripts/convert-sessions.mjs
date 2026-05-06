@@ -6,7 +6,7 @@ import { fileURLToPath } from 'url';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const sessionsDir = path.join(__dirname, '../sessions');
-const outputDir = path.join(__dirname, '../data');
+const outputDir = path.join(__dirname, '../public/data');
 
 // Ensure output directory exists
 if (!fs.existsSync(outputDir)) {
@@ -48,11 +48,12 @@ function parseMdFile(filePath) {
  * Extract main summary from body
  */
 function extractSummary(body) {
-  const summaryMatch = body.match(/## Κύρια αποτελέσματα\n\n([\s\S]*?)(?=\n## Θέματα|$)/);
+  // Try multiple possible section names
+  const summaryMatch = body.match(/## (?:Κύρια αποτελέσματα|Σύνοψη συνεδρίας)\n\n([\s\S]*?)(?=\n## Θέματα|$)/);
   if (!summaryMatch) return '';
   
   const summaryText = summaryMatch[1];
-  const lines = summaryText.split('\n').filter(l => l.trim() && !l.startsWith('-'));
+  const lines = summaryText.split('\n').filter(l => l.trim() && !l.startsWith('-') && !l.startsWith('#'));
   return lines.join(' ').trim();
 }
 
@@ -87,15 +88,17 @@ function parseTopics(body) {
       why_matters: '',
     };
 
-    // Parse fields
+    // Parse fields - handle multiple field name variations
     lines.forEach(line => {
-      if (line.startsWith('- **Κατάσταση:**')) {
-        topic.status = line.replace('- **Κατάσταση:**', '').trim();
-      } else if (line.startsWith('- **Με απλά λόγια:**')) {
-        topic.simple = line.replace('- **Με απλά λόγια:**', '').trim();
-      } else if (line.startsWith('- **Ψηφοφορία:**')) {
-        const votesText = line.replace('- **Ψηφοφορία:**', '').trim();
-        const match = votesText.match(/Υπέρ (\d+),\s*Κατά (\d+),\s*Αποχές (\d+)/);
+      if (line.startsWith('- Κατάσταση:') || line.startsWith('- **Κατάσταση:**')) {
+        topic.status = line.replace(/^- \*\*?Κατάσταση:\*\*?/, '').trim();
+      } else if (line.startsWith('- Με απλά λόγια:') || line.startsWith('- **Με απλά λόγια:**')) {
+        topic.simple = line.replace(/^- \*\*?Με απλά λόγια:\*\*?/, '').trim();
+      } else if (line.startsWith('- Ψηφοφορία:') || line.startsWith('- **Ψηφοφορία:**')) {
+        const votesText = line.replace(/^- \*\*?Ψηφοφορία:\*\*?/, '').trim();
+        // Try multiple vote formats
+        let match = votesText.match(/Υπέρ (\d+),\s*Κατά (\d+),\s*Αποχές (\d+)/);
+        if (!match) match = votesText.match(/(\d+)\s*✓\s*\|\s*(\d+)\s*✗\s*\|\s*(\d+)\s*–/);
         if (match) {
           topic.votes = {
             for: parseInt(match[1]),
@@ -103,10 +106,10 @@ function parseTopics(body) {
             abstain: parseInt(match[3]),
           };
         }
-      } else if (line.startsWith('- **Απόδειξη από τη συνεδρία:**')) {
-        topic.evidence = line.replace('- **Απόδειξη από τη συνεδρία:**', '').trim();
-      } else if (line.startsWith('- **Σχετικό PDF:**')) {
-        const pdfText = line.replace('- **Σχετικό PDF:**', '').trim();
+      } else if (line.startsWith('- Απόδειξη:') || line.startsWith('- **Απόδειξη') || line.startsWith('- Απόδειξη από')) {
+        topic.evidence = line.replace(/^- \*\*?Απόδειξη[^:]*:\*\*?/, '').trim();
+      } else if (line.startsWith('- Σχετικό PDF:') || line.startsWith('- **Σχετικό PDF:**')) {
+        const pdfText = line.replace(/^- \*\*?Σχετικό PDF:\*\*?/, '').trim();
         const pdfMatch = pdfText.match(/`(.+?)`,\s*σελ\.\s*(.+?)\.?$/);
         if (pdfMatch) {
           topic.pdf = pdfMatch[1];
@@ -114,14 +117,15 @@ function parseTopics(body) {
         } else {
           topic.pdf = pdfText;
         }
-      } else if (line.startsWith('- **Επίπεδο βεβαιότητας:**')) {
-        topic.certainty = line.replace('- **Επίπεδο βεβαιότητας:**', '').trim();
-      } else if (line.startsWith('- **Γιατί έχει σημασία:**')) {
-        topic.why_matters = line.replace('- **Γιατί έχει σημασία:**', '').trim();
+      } else if (line.startsWith('- Επίπεδο βεβαιότητας:') || line.startsWith('- **Επίπεδο βεβαιότητας:**')) {
+        topic.certainty = line.replace(/^- \*\*?Επίπεδο βεβαιότητας:\*\*?/, '').trim();
+      } else if (line.startsWith('- Γιατί έχει σημασία:') || line.startsWith('- **Γιατί έχει σημασία:**')) {
+        topic.why_matters = line.replace(/^- \*\*?Γιατί έχει σημασία:\*\*?/, '').trim();
       }
     });
 
-    if (topic.title && topic.simple) {
+    // Include topic if it has at least a title (simple explanation is optional)
+    if (topic.title) {
       topics.push(topic);
     }
   });

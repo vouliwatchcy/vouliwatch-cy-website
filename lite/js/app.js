@@ -51,7 +51,7 @@ const pages = {
         <h3 class="session-title">${session.title}</h3>
         <p class="session-summary">${session.summary}</p>
         <div class="session-stats">
-          ${session.topics ? `<div class="stat"><span class="stat-number">${session.topics.length}</span> <span>${i18n.t('previousSessions.title')}</span></div>` : ''}
+          ${session.topics ? `<div class="stat"><span class="stat-number">${session.topics.length}</span> <span>${i18n.t('previousSessions.topicsLabel')}</span></div>` : ''}
         </div>
         <a href="/sessions/${session.id}" class="session-link" data-link>${i18n.t('previousSessions.viewAll')}</a>
       </div>
@@ -144,7 +144,7 @@ const pages = {
         <h3 class="session-title">${session.title}</h3>
         <p class="session-summary">${session.summary}</p>
         <div class="session-stats">
-          ${session.topics ? `<div class="stat"><span class="stat-number">${session.topics.length}</span> <span>${i18n.t('previousSessions.title')}</span></div>` : ''}
+          ${session.topics ? `<div class="stat"><span class="stat-number">${session.topics.length}</span> <span>${i18n.t('previousSessions.topicsLabel')}</span></div>` : ''}
         </div>
         <a href="/sessions/${session.id}" class="session-link" data-link>${i18n.t('previousSessions.viewAll')}</a>
       </div>
