@@ -384,4 +384,3 @@ document.addEventListener('DOMContentLoaded', async () => {
   await loadSessions();
   router.init();
 });
-
