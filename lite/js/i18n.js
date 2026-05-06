@@ -30,7 +30,7 @@ const i18n = {
         title: 'Τι είναι το VouliWatch CY',
         description: 'Το VouliWatch CY είναι ένα civic-tech project που παρακολουθεί τη Βουλή των Αντιπροσώπων της Κύπρου και εξηγεί τη νομοθετική δραστηριότητα με απλή, κατανοητή γλώσσα για τους πολίτες.',
         pillar1Title: 'Διαφάνεια',
-        pillar1Desc: 'Κάνουμε τη Βουλή πιο κατανοητή',
+        pillar1Desc: '"Τι έγινε στη βουλή εύκολα και γρήγορα"',
         pillar2Title: 'Εξοικονόμηση χρόνου',
         pillar2Desc: 'Δεν χρειάζεται να παρακολουθείς ώρες βίντεο',
         pillar3Title: 'Απλή γλώσσα',
@@ -52,12 +52,14 @@ const i18n = {
         text: 'Το VouliWatch CY παράγει αποτελέσματα με τη βοήθεια AI. Γίνεται πάντα προσπάθεια διασταύρωσης με επίσημες πηγές, αλλά ενδέχεται να υπάρχουν λάθη. Αν εντοπίσετε κάτι ανακριβές, επικοινωνήστε μαζί μας.'
       },
       footer: {
-        tagline: 'Τι έγινε στη βουλή εύκολα και γρήγορα',
+        tagline: '<i>"Τι έγινε στη βουλή εύκολα και γρήγορα"</i>',
         instagram: 'Instagram',
         telegram: 'Telegram',
-        contact: 'vouliwatchcy@gmail.com',
+        contact: 'Contact',
+        email: 'vouliwatchcy@gmail.com',
         legal: 'Νομική σημείωση',
-        builtWith: 'Κατασκευάστηκε με ❤️ για τη κυπριακή δημοκρατία'
+        builtWith: 'Κατασκευάστηκε με ❤️ για τη κυπριακή δημοκρατία',
+        copyright: '© 2026 VouliWatch CY. Νομική σημείωση'
       },
       sessions: {
         title: 'Όλες οι Συνεδρίες',
@@ -88,6 +90,11 @@ const i18n = {
         high: 'Υψηλό',
         medium: 'Μέτριο',
         low: 'Χαμηλό'
+      },
+      colors: {
+        high: '#22c55e',
+        medium: '#eab308',
+        low: '#ef4444'
       }
     },
     en: {
@@ -117,7 +124,7 @@ const i18n = {
         title: 'About VouliWatch CY',
         description: 'VouliWatch CY is a civic-tech project that tracks the Cyprus House of Representatives and explains parliamentary activity in plain language for citizens.',
         pillar1Title: 'Transparency',
-        pillar1Desc: 'We make Parliament understandable',
+        pillar1Desc: '"What happened in parliament easily and quickly"',
         pillar2Title: 'Time-saving',
         pillar2Desc: 'No need to watch hours of video',
         pillar3Title: 'Plain language',
@@ -139,12 +146,14 @@ const i18n = {
         text: 'VouliWatch CY produces results with AI assistance. We always try to cross-check with official sources, but errors may occur. If you find something inaccurate, please contact us.'
       },
       footer: {
-        tagline: 'What happened in parliament easily and quickly',
+        tagline: '<i>"What happened in parliament easily and quickly"</i>',
         instagram: 'Instagram',
         telegram: 'Telegram',
-        contact: 'vouliwatchcy@gmail.com',
+        contact: 'Contact',
+        email: 'vouliwatchcy@gmail.com',
         legal: 'Legal notice',
-        builtWith: 'Built with ❤️ for Cypriot democracy'
+        builtWith: 'Built with ❤️ for Cypriot democracy',
+        copyright: '© 2026 VouliWatch CY. Legal notice'
       },
       sessions: {
         title: 'All Sessions',
@@ -175,6 +184,11 @@ const i18n = {
         high: 'High',
         medium: 'Medium',
         low: 'Low'
+      },
+      colors: {
+        high: '#22c55e',
+        medium: '#eab308',
+        low: '#ef4444'
       }
     }
   },

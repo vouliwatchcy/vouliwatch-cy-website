@@ -21,9 +21,9 @@ const components = {
             </ul>
             <button class="hamburger-menu" onclick="document.querySelector('.mobile-menu').classList.toggle('active')">☰</button>
             <ul class="mobile-menu">
-              <li><a href="/" data-link>${i18n.t('nav.home')}</a></li>
-              <li><a href="/sessions" data-link>${i18n.t('nav.sessions')}</a></li>
-              <li><a href="/about" data-link>${i18n.t('nav.about')}</a></li>
+              <li><a href="/" data-link onclick="document.querySelector('.mobile-menu').classList.remove('active')">${i18n.t('nav.home')}</a></li>
+              <li><a href="/sessions" data-link onclick="document.querySelector('.mobile-menu').classList.remove('active')">${i18n.t('nav.sessions')}</a></li>
+              <li><a href="/about" data-link onclick="document.querySelector('.mobile-menu').classList.remove('active')">${i18n.t('nav.about')}</a></li>
               <li><button class="mobile-lang-toggle" onclick="i18n.toggleLanguage(); location.reload()">${i18n.t('nav.language')}</button></li>
             </ul>
           </div>
@@ -50,7 +50,7 @@ const components = {
             </div>
             <div class="footer-section">
               <h3>${i18n.t('footer.contact')}</h3>
-              <a href="mailto:vouliwatchcy@gmail.com">vouliwatchcy@gmail.com</a>
+              <a href="mailto:${i18n.t('footer.email')}">${i18n.t('footer.email')}</a>
             </div>
           </div>
           <div class="footer-bottom">
