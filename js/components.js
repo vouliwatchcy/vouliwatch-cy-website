@@ -46,6 +46,7 @@ const components = {
               <div class="footer-social">
                 <a href="https://instagram.com/vouliwatchcy" target="_blank">${i18n.t('footer.instagram')}</a>
                 <a href="https://t.me/vouliwatchcy" target="_blank">${i18n.t('footer.telegram')}</a>
+                <a href="https://www.facebook.com/1122748827592172" target="_blank">${i18n.t('footer.facebook')}</a>
               </div>
             </div>
             <div class="footer-section">

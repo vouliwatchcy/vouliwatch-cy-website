@@ -864,6 +864,18 @@ a:hover {
   color: var(--neutral-600);
 }
 
+/* Timestamp links in evidence sections */
+.timestamp-link {
+  color: var(--primary);
+  font-weight: 600;
+  text-decoration: underline;
+  white-space: nowrap;
+}
+
+.timestamp-link:hover {
+  color: var(--accent);
+}
+
 /* Utilities */
 .hidden {
   display: none;

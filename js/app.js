@@ -2,6 +2,30 @@
 
 let sessionsData = {};
 
+function linkifyTimestamps(text, youtubeUrl) {
+  if (!text || !youtubeUrl) return text;
+  const videoIdMatch = youtubeUrl.match(/[?&]v=([a-zA-Z0-9_-]+)/);
+  if (!videoIdMatch) return text;
+  const videoId = videoIdMatch[1];
+
+  function toSeconds(ts) {
+    const parts = ts.split(':').map(Number);
+    if (parts.length === 3) return parts[0] * 3600 + parts[1] * 60 + parts[2];
+    if (parts.length === 2) return parts[0] * 60 + parts[1];
+    return 0;
+  }
+
+  const base = `https://www.youtube.com/live/${videoId}`;
+  // Match: [HH:MM:SS]-[HH:MM:SS], HH:MM:SS-HH:MM:SS, or single [HH:MM:SS]
+  return text.replace(
+    /\[?(\d{1,2}:\d{2}:\d{2})\]?-\[?(\d{1,2}:\d{2}:\d{2})\]?|\[(\d{1,2}:\d{2}:\d{2})\]/g,
+    (match, ts1, _ts2, ts3) => {
+      const secs = toSeconds(ts1 || ts3);
+      return `<a href="${base}?t=${secs}s" target="_blank" rel="noopener" class="timestamp-link">${match}</a>`;
+    }
+  );
+}
+
 // Load sessions data
 async function loadSessions() {
   try {
@@ -29,7 +53,7 @@ const pages = {
       <div class="topic-card">
         <div class="card-date">${components.formatDate(latestSession.date)}</div>
         ${components.statusBadge(topic.status)}
-        <h3 class="card-title">${topic.title}</h3>
+        <h3 class="card-title">${topic.id}. ${topic.title}</h3>
         <p class="card-description">${topic.simple}</p>
         <div class="card-meta">
           ${topic.votes ? `
@@ -200,7 +224,7 @@ const pages = {
           ${topic.certainty ? `<div>${components.certaintyBadge(topic.certainty)}</div>` : ''}
         </div>
         
-        <h2 class="topic-detail-title">${topic.title}</h2>
+        <h2 class="topic-detail-title">${topic.id}. ${topic.title}</h2>
         
         <div class="topic-detail-section">
           <h3 class="topic-detail-section-title">${i18n.t('sessionDetail.plainLanguage')}</h3>
@@ -230,7 +254,7 @@ const pages = {
         ${topic.evidence ? `
           <div class="topic-detail-section">
             <h3 class="topic-detail-section-title">${i18n.t('sessionDetail.evidence')}</h3>
-            <p class="topic-detail-section-content">${topic.evidence}</p>
+            <p class="topic-detail-section-content">${linkifyTimestamps(topic.evidence, session.youtube)}</p>
           </div>
         ` : ''}
         
