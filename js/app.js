@@ -4,9 +4,27 @@ let sessionsData = {};
 
 function linkifyTimestamps(text, youtubeUrl) {
   if (!text || !youtubeUrl) return text;
-  const videoIdMatch = youtubeUrl.match(/[?&]v=([a-zA-Z0-9_-]+)/);
-  if (!videoIdMatch) return text;
-  const videoId = videoIdMatch[1];
+  let parsedUrl;
+  try {
+    parsedUrl = new URL(youtubeUrl);
+  } catch {
+    return text;
+  }
+  if (!['http:', 'https:'].includes(parsedUrl.protocol)) return text;
+
+  const hostname = parsedUrl.hostname.toLowerCase();
+  const pathParts = parsedUrl.pathname.split('/').filter(Boolean);
+  let videoId = '';
+  if (hostname === 'youtu.be' && pathParts.length === 1) {
+    videoId = pathParts[0];
+  } else if (['youtube.com', 'www.youtube.com', 'm.youtube.com'].includes(hostname)) {
+    if (parsedUrl.pathname === '/watch') {
+      videoId = parsedUrl.searchParams.get('v') || '';
+    } else if (pathParts.length === 2 && ['live', 'shorts'].includes(pathParts[0])) {
+      videoId = pathParts[1];
+    }
+  }
+  if (!/^[a-zA-Z0-9_-]{6,}$/.test(videoId)) return text;
 
   function toSeconds(ts) {
     const parts = ts.split(':').map(Number);
@@ -16,14 +34,40 @@ function linkifyTimestamps(text, youtubeUrl) {
   }
 
   const base = `https://www.youtube.com/live/${videoId}`;
-  // Match: [HH:MM:SS]-[HH:MM:SS], HH:MM:SS-HH:MM:SS, or single [HH:MM:SS]
+  // Match bare or bracketed timestamps, plus ranges using -, – or —.
   return text.replace(
-    /\[?(\d{1,2}:\d{2}:\d{2})\]?-\[?(\d{1,2}:\d{2}:\d{2})\]?|\[(\d{1,2}:\d{2}:\d{2})\]/g,
-    (match, ts1, _ts2, ts3) => {
-      const secs = toSeconds(ts1 || ts3);
+    /(?:\[(\d{1,2}:[0-5]\d:[0-5]\d)\]|(\d{1,2}:[0-5]\d:[0-5]\d))\s*[-–—]\s*(?:\[\d{1,2}:[0-5]\d:[0-5]\d\]|\d{1,2}:[0-5]\d:[0-5]\d)|(?:\[(\d{1,2}:[0-5]\d:[0-5]\d)\]|(\d{1,2}:[0-5]\d:[0-5]\d))/g,
+    (match, rangeBracketedStart, rangeBareStart, singleBracketedStart, singleBareStart, offset, source) => {
+      if (!timestampContextIsValid(source, offset, offset + match.length)) return match;
+      const startTimestamp = rangeBracketedStart || rangeBareStart || singleBracketedStart || singleBareStart;
+      const secs = toSeconds(startTimestamp);
       return `<a href="${base}?t=${secs}s" target="_blank" rel="noopener" class="timestamp-link">${match}</a>`;
     }
   );
+}
+
+function timestampContextIsValid(value, start, end) {
+  const delimiters = '[]-–—:';
+  const isWord = char => /[\p{L}\p{N}_]/u.test(char);
+  const before = start > 0 ? value[start - 1] : '';
+  const after = end < value.length ? value[end] : '';
+
+  if (before && (isWord(before) || delimiters.includes(before))) return false;
+  if (after && (isWord(after) || delimiters.includes(after))) return false;
+
+  if (/\s/u.test(before)) {
+    let index = start - 1;
+    while (index >= 0 && /\s/u.test(value[index])) index -= 1;
+    if (index >= 0 && '[]-–—'.includes(value[index])) return false;
+  }
+
+  if (/\s/u.test(after)) {
+    let index = end;
+    while (index < value.length && /\s/u.test(value[index])) index += 1;
+    if (index < value.length && '[]-–—'.includes(value[index])) return false;
+  }
+
+  return true;
 }
 
 // Load sessions data
