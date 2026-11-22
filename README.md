@@ -82,11 +82,10 @@ vouliwatch-cy/
 │   └── 2025-10-13.md
 │
 ├── scripts/
-│   └── convert-sessions.mjs  ← Conversion script (.md → JSON)
+│   └── convert-sessions.mjs  ← Conversion script (.md → JSON), run by Cloudflare Pages
 │
-└── .github/
-    └── workflows/
-        └── build-deploy.yml  ← GitHub Actions automation
+└── tests/
+    └── timestamps.test.mjs   ← Evidence timestamp link tests
 ```
 
 ---
@@ -124,13 +123,15 @@ git commit -m "Add session: 2026-02-05"
 git push origin main
 ```
 
-### **Step 3: GitHub Actions Triggers**
+### **Step 3: Cloudflare Pages Builds and Deploys**
 
-The `.github/workflows/build-deploy.yml` workflow automatically:
-1. Detects the new `.md` file
-2. Runs `node scripts/convert-sessions.mjs`
+Cloudflare Pages is connected directly to this GitHub repository. On every push to `main` it automatically:
+1. Pulls the latest commit
+2. Runs the build command `node scripts/convert-sessions.mjs`
 3. Converts all `.md` files to `data/sessions.json`
-4. Deploys to Cloudflare Pages
+4. Deploys the site
+
+No GitHub Actions workflow is needed for this.
 
 ### **Step 4: Conversion Script Processes Files**
 
